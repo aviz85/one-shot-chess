@@ -16,6 +16,7 @@ interface GameContextType {
   selectPiece: (position: Position) => void;
   movePiece: (to: Position) => void;
   startNewGame: (settings?: Partial<GameSettings>) => void;
+  loadGame: (gameState: GameState, settings: GameSettings) => void;
   resignGame: (player: 'white' | 'black') => void;
 }
 
@@ -96,6 +97,20 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, initialSet
     }
   }, []);
 
+  const loadGame = useCallback((newGameState: GameState, newSettings: GameSettings) => {
+    setGameState(newGameState);
+    setGameSettings(newSettings);
+    setSelectedPosition(null);
+    setPossibleMoves([]);
+    
+    // קביעת סטטוס המשחק על בסיס מצב המשחק הטעון
+    if (newGameState.isCheckmate || newGameState.isStalemate || newGameState.isDraw) {
+      setGameStatus('finished');
+    } else {
+      setGameStatus('playing');
+    }
+  }, []);
+
   const resignGame = useCallback((player: 'white' | 'black') => {
     setGameStatus('finished');
     console.log(`השחקן ${player} הפסיד במשחק`);
@@ -111,6 +126,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, initialSet
     selectPiece,
     movePiece,
     startNewGame,
+    loadGame,
     resignGame
   };
 
