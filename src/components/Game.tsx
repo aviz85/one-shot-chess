@@ -6,6 +6,7 @@ import Board from './Board';
 import GameInfo from './GameInfo';
 import GameControls from './GameControls';
 import GameOver from './GameOver';
+import CountdownClock from './CountdownClock';
 
 interface GameProps {
   onBackToMenu?: () => void;
@@ -32,6 +33,9 @@ const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
             <div className="w-full lg:w-96 space-y-4">
               {/* מידע על המשחק */}
               <GameInfo />
+              
+              {/* שעון ספירה לאחור */}
+              <CountdownClock />
               
               {/* בקרות משחק */}
               <GameControls onBackToMenu={onBackToMenu} />

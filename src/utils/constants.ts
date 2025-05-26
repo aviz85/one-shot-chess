@@ -38,7 +38,7 @@ export const PIECE_SYMBOLS = {
 // צבעי משבצות
 export const SQUARE_COLORS = {
   light: '#F0D9B5',
-  dark: '#B58863',
+  dark: '#1e3a8a',
   highlight: '#829769',
   selected: '#FFFF33',
   possibleMove: '#646F4080',
@@ -66,7 +66,7 @@ export const INITIAL_POSITIONS = {
 };
 
 // אותיות עמודות
-export const FILE_LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+export const FILE_LETTERS = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח'];
 
 // מספרי שורות (בסדר הפוך לתצוגה)
 export const RANK_NUMBERS = ['8', '7', '6', '5', '4', '3', '2', '1']; 

@@ -70,21 +70,6 @@ const GameControls: React.FC<GameControlsProps> = ({ onBackToMenu }) => {
             חזרה לתפריט הראשי
           </button>
         )}
-
-        {/* כפתורים עתידיים */}
-        <button
-          disabled
-          className="bg-gray-300 text-gray-500 font-bold py-3 px-6 rounded-lg cursor-not-allowed"
-        >
-          שמור משחק (בקרוב)
-        </button>
-
-        <button
-          disabled
-          className="bg-gray-300 text-gray-500 font-bold py-3 px-6 rounded-lg cursor-not-allowed"
-        >
-          טען משחק (בקרוב)
-        </button>
       </div>
     </div>
   );

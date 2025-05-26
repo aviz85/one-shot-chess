@@ -34,7 +34,7 @@ const Square: React.FC<SquareProps> = ({
 
   return (
     <div
-      className="relative w-20 h-20 cursor-pointer flex items-center justify-center transition-colors duration-200"
+      className="relative w-24 h-24 cursor-pointer flex items-center justify-center transition-colors duration-200"
       style={{ backgroundColor: getBackgroundColor() }}
       onClick={onClick}
     >

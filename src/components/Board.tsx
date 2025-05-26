@@ -39,7 +39,7 @@ const Board: React.FC = () => {
         {/* אותיות עמודות */}
         <div className="flex absolute -bottom-8 left-0 right-0 px-10">
           {FILE_LETTERS.map((letter) => (
-            <div key={letter} className="w-20 h-8 flex items-center justify-center text-lg font-medium text-gray-700">
+            <div key={letter} className="w-24 h-8 flex items-center justify-center text-lg font-medium text-gray-700">
               {letter}
             </div>
           ))}
@@ -48,7 +48,7 @@ const Board: React.FC = () => {
         {/* מספרי שורות */}
         <div className="absolute -left-8 top-0 bottom-0 py-10 flex flex-col">
           {RANK_NUMBERS.map((number) => (
-            <div key={number} className="w-8 h-20 flex items-center justify-center text-lg font-medium text-gray-700">
+            <div key={number} className="w-8 h-24 flex items-center justify-center text-lg font-medium text-gray-700">
               {number}
             </div>
           ))}
