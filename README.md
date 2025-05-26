@@ -1,54 +1,137 @@
-# React + TypeScript + Vite
+# משחק שחמט - One Shot Chess
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+משחק שחמט מתקדם הבנוי ב-React עם TypeScript, המציע חוויית משחק מלאה עם ממשק משתמש מודרני ותכונות מתקדמות.
 
-Currently, two official plugins are available:
+## 🎯 תכונות המשחק
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 🏁 תכונות בסיסיות
+- **משחק שחמט מלא** - כל חוקי השחמט הסטנדרטיים
+- **ממשק דו-לשוני** - תמיכה מלאה בעברית
+- **עיצוב מודרני** - ממשק משתמש נקי ואינטואיטיבי
+- **רספונסיבי** - מותאם לכל גדלי מסך
 
-## Expanding the ESLint configuration
+### ⏰ שעון ספירה לאחור
+- **טיימר כפול** - שעון נפרד לכל שחקן
+- **זמן ברירת מחדל** - 10 דקות לכל שחקן
+- **התראות חזותיות** - צבעים משתנים כשהזמן אוזל
+- **הדגשת שחקן פעיל** - הטיימר של השחקן הנוכחי מודגש
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🎨 עיצוב מותאם
+- **לוח כחול עמוק** - משבצות כהות בצבע כחול במקום חום
+- **אותיות עבריות** - סימון עמודות באותיות א-ח
+- **לוח מוגדל** - גודל משבצות 96x96 פיקסלים
+- **אנימציות חלקות** - מעברי צבע ואפקטים ויזואליים
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### 🎮 בקרות משחק
+- **משחק חדש** - התחלת משחק חדש בכל עת
+- **כניעה** - אפשרות לוותר על המשחק
+- **חזרה לתפריט** - מעבר חזרה לתפריט הראשי
+- **שמירת הגדרות** - שמירת שמות שחקנים
+
+### 🔍 תכונות מתקדמות
+- **זיהוי מהלכים חוקיים** - הדגשת מהלכים אפשריים
+- **זיהוי שח ומט** - התראות על מצבי שח, מט ופט
+- **מניעת מהלכים לא חוקיים** - הגנה מפני השארת המלך בשח
+- **מעקב אחר כלים שנאכלו** - הצגת כלים שהוסרו מהלוח
+
+## 🚀 התקנה והפעלה
+
+### דרישות מערכת
+- Node.js 18+ 
+- npm או yarn
+
+### התקנה
+```bash
+# שכפול הפרויקט
+git clone <repository-url>
+cd one-shot-chess
+
+# התקנת תלויות
+npm install
+
+# הפעלת שרת פיתוח
+npm run dev
+
+# בניית גרסת פרודקשן
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+### פקודות זמינות
+```bash
+npm run dev      # הפעלת שרת פיתוח
+npm run build    # בניית גרסת פרודקשן
+npm run preview  # תצוגה מקדימה של הבנייה
+npm run lint     # בדיקת קוד
 ```
+
+## 🎯 איך לשחק
+
+1. **התחלת משחק**
+   - הכנס שמות שחקנים בתפריט הראשי
+   - לחץ על "התחל משחק"
+
+2. **ביצוע מהלכים**
+   - לחץ על כלי כדי לבחור אותו
+   - המהלכים האפשריים יודגשו
+   - לחץ על משבצת יעד לביצוע המהלך
+
+3. **מעקב אחר הזמן**
+   - שעון הספירה לאחור מתחיל אוטומטית
+   - הזמן עובר בין השחקנים עם כל מהלך
+   - התראות צבע כשהזמן אוזל
+
+4. **סיום המשחק**
+   - המשחק מסתיים במט, פט או כשהזמן נגמר
+   - אפשרות להתחיל משחק חדש או לחזור לתפריט
+
+## 🛠️ טכנולוגיות
+
+- **React 19** - ספריית UI
+- **TypeScript** - שפת תכנות מוקלדת
+- **Vite** - כלי בנייה מהיר
+- **Tailwind CSS** - framework עיצוב
+- **Framer Motion** - אנימציות
+- **Stagewise Toolbar** - כלי פיתוח AI
+
+## 📁 מבנה הפרויקט
+
+```
+src/
+├── components/          # רכיבי React
+│   ├── Board.tsx       # לוח השחמט
+│   ├── Square.tsx      # משבצת בודדת
+│   ├── ChessPiece.tsx  # כלי שחמט
+│   ├── CountdownClock.tsx # שעון ספירה לאחור
+│   ├── GameControls.tsx   # בקרות משחק
+│   ├── GameInfo.tsx       # מידע על המשחק
+│   └── MainMenu.tsx       # תפריט ראשי
+├── contexts/           # React Contexts
+│   └── GameContext.tsx # ניהול מצב המשחק
+├── game/              # לוגיקת המשחק
+│   ├── board.ts       # ניהול הלוח
+│   ├── moves.ts       # חוקי תנועה
+│   └── gameLogic.ts   # לוגיקה כללית
+├── types/             # הגדרות TypeScript
+├── utils/             # קבועים ועזרים
+└── assets/            # קבצי מדיה
+```
+
+## 🎨 התאמה אישית
+
+ניתן להתאים את המשחק על ידי עריכת הקבצים הבאים:
+
+- `src/utils/constants.ts` - צבעים, זמנים וקבועים
+- `src/components/CountdownClock.tsx` - הגדרות שעון
+- `tailwind.config.js` - עיצוב וצבעים
+
+## 📝 רישיון
+
+פרויקט זה מופץ תחת רישיון MIT.
+
+## 🤝 תרומה
+
+תרומות מתקבלות בברכה! אנא פתח issue או שלח pull request.
+
+---
+
+**נוצר עם ❤️ בישראל**

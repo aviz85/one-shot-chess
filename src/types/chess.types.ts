@@ -25,6 +25,9 @@ export type Square = Piece | null;
 // לוח שחמט - מערך דו-ממדי 8x8
 export type Board = Square[][];
 
+// סוגי מהלכים מיוחדים
+export type SpecialMoveType = 'castling' | 'enPassant' | 'promotion';
+
 // מהלך
 export interface Move {
   from: Position;
@@ -34,10 +37,16 @@ export interface Move {
   isCheck?: boolean;
   isCheckmate?: boolean;
   isStalemate?: boolean;
-  isCastling?: boolean;
-  isEnPassant?: boolean;
-  isPromotion?: boolean;
+  specialMove?: SpecialMoveType;
+  // פרטים למהלכים מיוחדים
+  castlingType?: 'kingside' | 'queenside';
+  enPassantTarget?: Position;
   promotionPiece?: PieceType;
+  // מיקום נוסף להצרחה (מיקום הצריח)
+  rookMove?: {
+    from: Position;
+    to: Position;
+  };
 }
 
 // מצב משחק
@@ -56,6 +65,17 @@ export interface GameState {
   enPassantTarget?: Position; // למהלך אן פסאן
   halfMoveClock: number; // לחוק 50 המהלכים
   fullMoveNumber: number;
+  // זכויות הצרחה
+  castlingRights: {
+    white: {
+      kingside: boolean;
+      queenside: boolean;
+    };
+    black: {
+      kingside: boolean;
+      queenside: boolean;
+    };
+  };
 }
 
 // הגדרות משחק
@@ -77,4 +97,14 @@ export type GameStatus = 'waiting' | 'playing' | 'paused' | 'finished';
 export interface GameResult {
   winner?: PlayerColor;
   reason: 'checkmate' | 'stalemate' | 'resignation' | 'timeout' | 'draw';
+}
+
+// מידע על משחק שמור
+export interface SavedGame {
+  id: string;
+  name: string;
+  gameState: GameState;
+  settings: GameSettings;
+  createdAt: Date;
+  lastModified: Date;
 } 

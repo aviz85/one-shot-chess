@@ -1,12 +1,12 @@
 // חוקי תנועה של כלי שחמט
 
-import type { Board, Position, Piece, PlayerColor } from '../types/chess.types';
+import type { Board, Position, Piece, PlayerColor, GameState } from '../types/chess.types';
 import { getPieceAt, isValidPosition, movePiece, findKing } from './board';
 
 /**
  * מחזיר את כל המהלכים האפשריים לכלי מסוים
  */
-export function getPossibleMoves(board: Board, position: Position): Position[] {
+export function getPossibleMoves(board: Board, position: Position, gameState?: GameState): Position[] {
   const piece = getPieceAt(board, position);
   if (!piece) return [];
 
@@ -14,7 +14,7 @@ export function getPossibleMoves(board: Board, position: Position): Position[] {
 
   switch (piece.type) {
     case 'pawn':
-      moves = getPawnMoves(board, position, piece);
+      moves = getPawnMoves(board, position, piece, gameState);
       break;
     case 'knight':
       moves = getKnightMoves(board, position, piece);
@@ -29,7 +29,7 @@ export function getPossibleMoves(board: Board, position: Position): Position[] {
       moves = getQueenMoves(board, position, piece);
       break;
     case 'king':
-      moves = getKingMoves(board, position, piece);
+      moves = getKingMoves(board, position, piece, gameState);
       break;
   }
 
@@ -38,9 +38,9 @@ export function getPossibleMoves(board: Board, position: Position): Position[] {
 }
 
 /**
- * מהלכי רגלי
+ * מהלכי רגלי (כולל אן פסאן)
  */
-function getPawnMoves(board: Board, position: Position, piece: Piece): Position[] {
+function getPawnMoves(board: Board, position: Position, piece: Piece, gameState?: GameState): Position[] {
   const moves: Position[] = [];
   const direction = piece.color === 'white' ? -1 : 1;
   const startRow = piece.color === 'white' ? 6 : 1;
@@ -68,6 +68,25 @@ function getPawnMoves(board: Board, position: Position, piece: Piece): Position[
       const target = getPieceAt(board, capture);
       if (target && target.color !== piece.color) {
         moves.push(capture);
+      }
+    }
+  }
+
+  // אן פסאן
+  if (gameState?.enPassantTarget) {
+    const enPassantRow = piece.color === 'white' ? 3 : 4;
+    if (position.row === enPassantRow) {
+      const leftEnPassant = { row: position.row + direction, col: position.col - 1 };
+      const rightEnPassant = { row: position.row + direction, col: position.col + 1 };
+      
+      if (gameState.enPassantTarget.row === leftEnPassant.row && 
+          gameState.enPassantTarget.col === leftEnPassant.col) {
+        moves.push(leftEnPassant);
+      }
+      
+      if (gameState.enPassantTarget.row === rightEnPassant.row && 
+          gameState.enPassantTarget.col === rightEnPassant.col) {
+        moves.push(rightEnPassant);
       }
     }
   }
@@ -111,22 +130,21 @@ function getBishopMoves(board: Board, position: Position, piece: Piece): Positio
   ];
 
   for (const dir of directions) {
-    let newPos = { row: position.row + dir.row, col: position.col + dir.col };
+    let currentPos = { row: position.row + dir.row, col: position.col + dir.col };
     
-    while (isValidPosition(newPos)) {
-      const target = getPieceAt(board, newPos);
+    while (isValidPosition(currentPos)) {
+      const target = getPieceAt(board, currentPos);
       
       if (!target) {
-        moves.push({ ...newPos });
+        moves.push({ ...currentPos });
       } else {
         if (target.color !== piece.color) {
-          moves.push({ ...newPos });
+          moves.push({ ...currentPos });
         }
         break;
       }
       
-      newPos.row += dir.row;
-      newPos.col += dir.col;
+      currentPos = { row: currentPos.row + dir.row, col: currentPos.col + dir.col };
     }
   }
 
@@ -144,22 +162,21 @@ function getRookMoves(board: Board, position: Position, piece: Piece): Position[
   ];
 
   for (const dir of directions) {
-    let newPos = { row: position.row + dir.row, col: position.col + dir.col };
+    let currentPos = { row: position.row + dir.row, col: position.col + dir.col };
     
-    while (isValidPosition(newPos)) {
-      const target = getPieceAt(board, newPos);
+    while (isValidPosition(currentPos)) {
+      const target = getPieceAt(board, currentPos);
       
       if (!target) {
-        moves.push({ ...newPos });
+        moves.push({ ...currentPos });
       } else {
         if (target.color !== piece.color) {
-          moves.push({ ...newPos });
+          moves.push({ ...currentPos });
         }
         break;
       }
       
-      newPos.row += dir.row;
-      newPos.col += dir.col;
+      currentPos = { row: currentPos.row + dir.row, col: currentPos.col + dir.col };
     }
   }
 
@@ -175,9 +192,9 @@ function getQueenMoves(board: Board, position: Position, piece: Piece): Position
 }
 
 /**
- * מהלכי מלך
+ * מהלכי מלך (כולל הצרחה)
  */
-function getKingMoves(board: Board, position: Position, piece: Piece): Position[] {
+function getKingMoves(board: Board, position: Position, piece: Piece, gameState?: GameState): Position[] {
   const moves: Position[] = [];
   const kingMoves = [
     { row: -1, col: -1 }, { row: -1, col: 0 }, { row: -1, col: 1 },
@@ -190,7 +207,29 @@ function getKingMoves(board: Board, position: Position, piece: Piece): Position[
     if (isValidPosition(newPos)) {
       const target = getPieceAt(board, newPos);
       if (!target || target.color !== piece.color) {
-        moves.push(newPos);
+        // בדיקה שהמשבצת לא מותקפת
+        if (!isSquareAttacked(board, newPos, piece.color === 'white' ? 'black' : 'white')) {
+          moves.push(newPos);
+        }
+      }
+    }
+  }
+
+  // הצרחה
+  if (gameState && canCastle(board, piece.color, gameState)) {
+    const row = piece.color === 'white' ? 7 : 0;
+    
+    // הצרחה קצרה (מלכותית)
+    if (gameState.castlingRights[piece.color].kingside) {
+      if (canCastleKingside(board, piece.color, row)) {
+        moves.push({ row, col: 6 });
+      }
+    }
+    
+    // הצרחה ארוכה (מלכתית)
+    if (gameState.castlingRights[piece.color].queenside) {
+      if (canCastleQueenside(board, piece.color, row)) {
+        moves.push({ row, col: 2 });
       }
     }
   }
@@ -249,7 +288,7 @@ function getAttackingMoves(board: Board, position: Position, piece: Piece): Posi
     case 'queen':
       return getQueenMoves(board, position, piece);
     case 'king':
-      return getKingMoves(board, position, piece);
+      return getBasicKingMoves(board, position, piece);
     default:
       return [];
   }
@@ -269,4 +308,99 @@ function getPawnAttacks(position: Position, piece: Piece): Position[] {
   if (isValidPosition(rightAttack)) attacks.push(rightAttack);
   
   return attacks;
+}
+
+/**
+ * מהלכי מלך בסיסיים (ללא בדיקת שח)
+ */
+function getBasicKingMoves(board: Board, position: Position, piece: Piece): Position[] {
+  const moves: Position[] = [];
+  const kingMoves = [
+    { row: -1, col: -1 }, { row: -1, col: 0 }, { row: -1, col: 1 },
+    { row: 0, col: -1 }, { row: 0, col: 1 },
+    { row: 1, col: -1 }, { row: 1, col: 0 }, { row: 1, col: 1 }
+  ];
+
+  for (const move of kingMoves) {
+    const newPos = { row: position.row + move.row, col: position.col + move.col };
+    if (isValidPosition(newPos)) {
+      const target = getPieceAt(board, newPos);
+      if (!target || target.color !== piece.color) {
+        moves.push(newPos);
+      }
+    }
+  }
+
+  return moves;
+}
+
+/**
+ * בודק אם ניתן לבצע הצרחה
+ */
+function canCastle(board: Board, color: PlayerColor, gameState: GameState): boolean {
+  // המלך לא יכול להיות בשח
+  if (gameState.isCheck) return false;
+  
+  // המלך לא יכול להיות זז
+  const kingPos = findKing(board, color);
+  if (!kingPos) return false;
+  
+  const king = getPieceAt(board, kingPos);
+  if (!king || king.hasMoved) return false;
+  
+  return true;
+}
+
+/**
+ * בודק אם ניתן לבצע הצרחה קצרה
+ */
+function canCastleKingside(board: Board, color: PlayerColor, row: number): boolean {
+  // בדיקה שהמשבצות ריקות
+  if (getPieceAt(board, { row, col: 5 }) || getPieceAt(board, { row, col: 6 })) {
+    return false;
+  }
+  
+  // בדיקה שהצריח לא זז
+  const rook = getPieceAt(board, { row, col: 7 });
+  if (!rook || rook.type !== 'rook' || rook.color !== color || rook.hasMoved) {
+    return false;
+  }
+  
+  // בדיקה שהמלך לא עובר דרך שח
+  const enemyColor = color === 'white' ? 'black' : 'white';
+  if (isSquareAttacked(board, { row, col: 4 }, enemyColor) ||
+      isSquareAttacked(board, { row, col: 5 }, enemyColor) ||
+      isSquareAttacked(board, { row, col: 6 }, enemyColor)) {
+    return false;
+  }
+  
+  return true;
+}
+
+/**
+ * בודק אם ניתן לבצע הצרחה ארוכה
+ */
+function canCastleQueenside(board: Board, color: PlayerColor, row: number): boolean {
+  // בדיקה שהמשבצות ריקות
+  if (getPieceAt(board, { row, col: 1 }) || 
+      getPieceAt(board, { row, col: 2 }) || 
+      getPieceAt(board, { row, col: 3 })) {
+    return false;
+  }
+  
+  // בדיקה שהצריח לא זז
+  const rook = getPieceAt(board, { row, col: 0 });
+  if (!rook || rook.type !== 'rook' || rook.color !== color || rook.hasMoved) {
+    return false;
+  }
+  
+  // בדיקה שהמלך לא עובר דרך שח
+  const enemyColor = color === 'white' ? 'black' : 'white';
+  if (isSquareAttacked(board, { row, col: 4 }, enemyColor) ||
+      isSquareAttacked(board, { row, col: 3 }, enemyColor) ||
+      isSquareAttacked(board, { row, col: 2 }, enemyColor)) {
+    return false;
+  }
+  
+  return true;
 } 

@@ -60,7 +60,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, initialSet
     // אם בוחרים כלי של השחקן הנוכחי
     if (piece && piece.color === gameState.currentPlayer && gameStatus === 'playing') {
       setSelectedPosition(position);
-      const moves = getPossibleMoves(gameState.board, position);
+      const moves = getPossibleMoves(gameState.board, position, gameState);
       setPossibleMoves(moves);
     } else {
       // אם לוחצים על משבצת ריקה או כלי של היריב, מבטלים בחירה
@@ -96,8 +96,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, initialSet
     }
   }, []);
 
-  const resignGame = useCallback((_player: 'white' | 'black') => {
+  const resignGame = useCallback((player: 'white' | 'black') => {
     setGameStatus('finished');
+    console.log(`השחקן ${player} הפסיד במשחק`);
     // TODO: הוסף לוגיקה לשמירת תוצאת המשחק
   }, []);
 

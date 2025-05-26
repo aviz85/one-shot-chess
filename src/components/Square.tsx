@@ -13,7 +13,8 @@ interface SquareProps {
   isSelected: boolean;
   isPossibleMove: boolean;
   isCheck: boolean;
-  onClick: () => void;
+  onClick: (position: { row: number; col: number }) => void;
+  onDrop?: (from: { row: number; col: number }, to: { row: number; col: number }) => void;
 }
 
 const Square: React.FC<SquareProps> = ({
@@ -24,7 +25,8 @@ const Square: React.FC<SquareProps> = ({
   isSelected,
   isPossibleMove,
   isCheck,
-  onClick
+  onClick,
+  onDrop
 }) => {
   const getBackgroundColor = () => {
     if (isCheck) return SQUARE_COLORS.check;
@@ -32,11 +34,36 @@ const Square: React.FC<SquareProps> = ({
     return isLight ? SQUARE_COLORS.light : SQUARE_COLORS.dark;
   };
 
+  const position = { row: _row, col: _col };
+
+  const handleClick = () => {
+    onClick(position);
+  };
+
+  const handleDragStart = (e: React.DragEvent) => {
+    if (piece) {
+      e.dataTransfer.setData('text/plain', JSON.stringify(position));
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const fromPosition = JSON.parse(e.dataTransfer.getData('text/plain'));
+    onDrop?.(fromPosition, position);
+  };
+
   return (
     <div
       className="relative w-24 h-24 cursor-pointer flex items-center justify-center transition-colors duration-200"
       style={{ backgroundColor: getBackgroundColor() }}
-      onClick={onClick}
+      onClick={handleClick}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
     >
       {piece && <ChessPiece piece={piece} />}
       
