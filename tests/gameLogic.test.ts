@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { createNewGame, makeMove, isInCheck, isCheckmate, isStalemate } from '../src/game/gameLogic';
-import { createInitialBoard, getPieceAt } from '../src/game/board';
+import { createInitialBoard, getPieceAt, getPlayerPieces } from '../src/game/board';
+import { getPossibleMoves } from '../src/game/moves';
 import type { GameState, Position } from '../src/types/chess.types';
 
 describe('Game Logic Tests', () => {
@@ -167,7 +168,7 @@ describe('Game Logic Tests', () => {
 
   describe('Game End Conditions', () => {
     it('should detect checkmate', () => {
-      // יצירת מצב מט פשוט - מלך בפינה עם מלכה
+      // יצירת מצב מט אמיתי - מלך לבן חסום בפינה
       const game = createNewGame();
       
       // ניקוי הלוח
@@ -177,12 +178,12 @@ describe('Game Logic Tests', () => {
         }
       }
       
-      // מלך לבן ב-a8 (0,0) - פינה עליונה שמאלית
-      game.board[0][0] = { type: 'king', color: 'white', hasMoved: true };
-      // מלכה שחורה ב-b6 (2,1) שתוקפת את המלך
-      game.board[2][1] = { type: 'queen', color: 'black', hasMoved: true };
-      // מלך שחור ב-c6 (2,2) שתומך במלכה ומונע מהמלך הלבן לברוח
-      game.board[2][2] = { type: 'king', color: 'black', hasMoved: true };
+      // מלך לבן ב-a1 (7,0) - פינה תחתונה שמאלית
+      game.board[7][0] = { type: 'king', color: 'white', hasMoved: true };
+      // מלכה שחורה ב-c1 (7,2) שתוקפת את המלך מהצד
+      game.board[7][2] = { type: 'queen', color: 'black', hasMoved: true };
+      // מלך שחור ב-b3 (5,1) שמונע מהמלך הלבן לברוח ל-b1 או b2
+      game.board[5][1] = { type: 'king', color: 'black', hasMoved: true };
       
       game.currentPlayer = 'white';
       
