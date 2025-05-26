@@ -167,7 +167,7 @@ describe('Game Logic Tests', () => {
 
   describe('Game End Conditions', () => {
     it('should detect checkmate', () => {
-      // יצירת מצב מט פשוט - מט בשורה האחורית
+      // יצירת מצב מט פשוט - מלך בפינה עם מלכה
       const game = createNewGame();
       
       // ניקוי הלוח
@@ -177,15 +177,12 @@ describe('Game Logic Tests', () => {
         }
       }
       
-      // מלך לבן ב-h1 (7,7) - חסום על ידי הכלים שלו
-      game.board[7][7] = { type: 'king', color: 'white', hasMoved: true };
-      // רגלים לבנים שחוסמים את המלך
-      game.board[6][6] = { type: 'pawn', color: 'white', hasMoved: true };
-      game.board[6][7] = { type: 'pawn', color: 'white', hasMoved: true };
-      // מלכה שחורה ב-g1 (7,6) שיוצרת מט
-      game.board[7][6] = { type: 'queen', color: 'black', hasMoved: true };
-      // מלך שחור ב-f3 (5,5) - רחוק מספיק
-      game.board[5][5] = { type: 'king', color: 'black', hasMoved: true };
+      // מלך לבן ב-a8 (0,0) - פינה עליונה שמאלית
+      game.board[0][0] = { type: 'king', color: 'white', hasMoved: true };
+      // מלכה שחורה ב-b6 (2,1) שתוקפת את המלך
+      game.board[2][1] = { type: 'queen', color: 'black', hasMoved: true };
+      // מלך שחור ב-c6 (2,2) שתומך במלכה ומונע מהמלך הלבן לברוח
+      game.board[2][2] = { type: 'king', color: 'black', hasMoved: true };
       
       game.currentPlayer = 'white';
       
