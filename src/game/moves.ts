@@ -1,6 +1,6 @@
 // חוקי תנועה של כלי שחמט
 
-import type { Board, Position, Piece, Move, PlayerColor } from '../types/chess.types';
+import type { Board, Position, Piece, PlayerColor } from '../types/chess.types';
 import { getPieceAt, isValidPosition, movePiece, findKing } from './board';
 
 /**

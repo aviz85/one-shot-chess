@@ -17,8 +17,8 @@ interface SquareProps {
 }
 
 const Square: React.FC<SquareProps> = ({
-  row,
-  col,
+  row: _row,
+  col: _col,
   piece,
   isLight,
   isSelected,

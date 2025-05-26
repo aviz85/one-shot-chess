@@ -96,7 +96,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children, initialSet
     }
   }, []);
 
-  const resignGame = useCallback((player: 'white' | 'black') => {
+  const resignGame = useCallback((_player: 'white' | 'black') => {
     setGameStatus('finished');
     // TODO: הוסף לוגיקה לשמירת תוצאת המשחק
   }, []);

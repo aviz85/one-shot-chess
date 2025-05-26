@@ -1,7 +1,7 @@
 // ניהול לוח השחמט
 
 import type { Board, Piece, Position, PlayerColor } from '../types/chess.types';
-import { BOARD_SIZE, INITIAL_POSITIONS } from '../utils/constants';
+import { BOARD_SIZE } from '../utils/constants';
 
 /**
  * יוצר לוח שחמט ריק

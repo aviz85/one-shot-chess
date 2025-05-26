@@ -13,7 +13,7 @@ interface GameProps {
 }
 
 const Game: React.FC<GameProps> = ({ onBackToMenu }) => {
-  const { gameState, gameStatus, gameSettings, startNewGame } = useGame();
+  const { gameState, gameStatus, startNewGame } = useGame();
 
   const handleNewGame = () => {
     startNewGame();
